@@ -1,8 +1,8 @@
 # Design Overview
-![design](.\clickatell_design.png)
+![design](clickatell_design.png)
 # Generating Spring Boot project
 The first step is generating the spring boot application with the spring initialiser found [here](https://start.spring.io/) . A sample used can be seen below:
-![sample](.\spring_initializer.png)
+![sample](spring_initializer.png)
 
 ## Application Design
 
