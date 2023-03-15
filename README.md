@@ -1,5 +1,10 @@
+# Table of Contents
+
 # Design Overview
+
 ![design](clickatell_design.png)
+
+
 # Generating Spring Boot project
 The first step is generating the spring boot application with the spring initialiser found [here](https://start.spring.io/) . A sample used can be seen below:
 ![sample](spring_initializer.png)
@@ -7,11 +12,14 @@ The first step is generating the spring boot application with the spring initial
 ## Application Design
 
 ### Architecture
-Model
-| name | defition |
---------|----------|
-`firstName` | first Name of engineer |
-`lastName` | surname of engineer |
+I am mostly focusing on the `Hosting Application` aspect of the design i.e infrastructure, deployment into kubernets cluster and securing the application.
+
+1. `Database` --> I am going to use a use a deployment to provision the sql instance. and use a `persistent volume` to inject the instance into the application. <br>
+> *NB*: *`For production grade application I would use Azure storage account and create a storage-class in kubernets and then create a persistent volume claim* <br>
+The reason why I went with a pod instead was the initial design assumming i had the resources to deoploy the application.
+
+2. `Ingress` - provides external access of the services via http. I am also using this
+3. `Helm`  - provides the capability to deploy the application seamlessly
 
 ### Dockerization of application
 The Dockerization for the application is dependend on the version of java used. Here is a sample of what I would do. The base image would be from `openjdk`.  Secondly, i prefer running containers as non-root, as such i would create a user (in this sample i am calling it devops and  the group the user belongs to is called devops as well). After which I create directory inside the container which will be the app directory and give my group and user permission to read and execute
@@ -56,7 +64,13 @@ $ docker push registry-name>.azurecr.io/repo/devops-engineer:v1.0.0-$(Build.Buil
 
 # Release/Deployment Pipeline
 
+1. A kubeconfig file is required to deploy from local machine to kubernetes cluster
+        - ensure the right context is set
+        - `kubectl apply -f`
 
+2. helm package 
+        - first create a package (using the manifests file) --> `helm create <package-name>
+        - helm install -f <helm-file> <helm-package-name>
 # Infrastructure Provisioning
 
 AKS infrastructure would be used as the hosting platform for the application. The provisioning tool would be terraform for consistency and ease of provision and infrastructure state managent.
@@ -72,9 +86,3 @@ AKS infrastructure would be used as the hosting platform for the application. Th
 - `log analaytics workspace` - used for logging and monitoring AKS 
 - `storage account` (general purpose v2 - cool tier) --> and container  are required to store the terraform state file
 
-# Ingress and loadbalancer
-
-# helm
-
-
-1. Locally, `kubectl` tool is required if you wish to interact with the cluster
